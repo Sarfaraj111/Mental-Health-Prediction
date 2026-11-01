@@ -303,10 +303,11 @@
     </p>
 
     <div class="rag-server-note animate-on-scroll">
-      <strong>Setup required:</strong> Start the server with
+      <strong>Running locally?</strong> Start the server with
       <code>python -m uvicorn rag_engine:app --host 127.0.0.1 --port 8000</code>
       then open <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>.
-      Add your <strong>GROQ_API_KEY</strong> to a <code>.env</code> file (see <code>.env.example</code>).
+      Add your <strong>GROQ_API_KEY</strong> to a <code>.env</code> file.
+      When deployed (e.g. on Render), the server starts automatically — no extra steps needed.
     </div>
 
     <div class="chat-layout animate-on-scroll">

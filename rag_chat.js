@@ -9,12 +9,8 @@ const locationStatus = document.getElementById("rag-location-status");
 const providerList   = document.getElementById("rag-provider-list");
 const mapSearch      = document.getElementById("rag-map-search");
 
-const ragApiBase =
-  location.protocol === "http:" &&
-  ["localhost", "127.0.0.1"].includes(location.hostname) &&
-  location.port === "8000"
-    ? ""
-    : "http://127.0.0.1:8000";
+// Always use relative URLs — works on localhost:8000 and on any deployed host (Render, etc.)
+const ragApiBase = "";
 
 // ── API helper ────────────────────────────────────────────────────────────
 
@@ -24,16 +20,16 @@ async function requestRagApi(path, options) {
     response = await fetch(`${ragApiBase}${path}`, options);
   } catch {
     throw new Error(
-      "Cannot reach the chatbot server. In PowerShell, run:\n" +
-      ".\\.venv\\Scripts\\python.exe -m uvicorn rag_engine:app --host 127.0.0.1 --port 8000\n" +
-      "from the project folder, then open http://127.0.0.1:8000.",
+      "Cannot reach the chatbot server. " +
+      "If running locally, start it with: uvicorn rag_engine:app --host 127.0.0.1 --port 8000 " +
+      "then open http://127.0.0.1:8000. If deployed, check that the server is running.",
     );
   }
 
   if (!response.headers.get("content-type")?.includes("application/json")) {
     throw new Error(
       "The request reached a web page instead of the chatbot API. " +
-      "Open http://127.0.0.1:8000 (not the HTML file directly) and try again.",
+      "Make sure you are opening the app via the server URL, not the HTML file directly.",
     );
   }
 

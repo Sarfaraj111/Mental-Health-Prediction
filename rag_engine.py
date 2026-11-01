@@ -256,7 +256,7 @@ def _distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
 app = FastAPI(title="Student Mental Health – AI Chat & Nearby Care")
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?|https://.*\.onrender\.com",
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
