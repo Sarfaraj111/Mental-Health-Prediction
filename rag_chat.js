@@ -20,16 +20,24 @@ async function requestRagApi(path, options) {
     response = await fetch(`${ragApiBase}${path}`, options);
   } catch {
     throw new Error(
-      "Cannot reach the chatbot server. " +
-      "If running locally, start it with: uvicorn rag_engine:app --host 127.0.0.1 --port 8000 " +
-      "then open http://127.0.0.1:8000. If deployed, check that the server is running.",
+      "Could not reach the server. Please wait a moment and try again — " +
+      "the service may be waking up from sleep.",
     );
   }
 
-  if (!response.headers.get("content-type")?.includes("application/json")) {
+  const contentType = response.headers.get("content-type") || "";
+
+  // Non-JSON response usually means the server returned an error page (e.g. 502 cold-start)
+  if (!contentType.includes("application/json")) {
+    if (response.status === 502 || response.status === 503 || response.status === 504) {
+      throw new Error(
+        "The server is starting up — this can take 30–60 seconds on the free plan. " +
+        "Please wait a moment and try again.",
+      );
+    }
     throw new Error(
-      "The request reached a web page instead of the chatbot API. " +
-      "Make sure you are opening the app via the server URL, not the HTML file directly.",
+      `Server returned an unexpected response (HTTP ${response.status}). ` +
+      "Please try again in a few seconds.",
     );
   }
 
@@ -107,12 +115,34 @@ chatForm.addEventListener("submit", async (event) => {
 
   const typingBubble = addTypingIndicator();
 
+  const chatOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+  };
+
   try {
-    const result = await requestRagApi("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-    });
+    let result;
+    try {
+      result = await requestRagApi("/api/chat", chatOptions);
+    } catch (firstError) {
+      // On cold-start errors (502/503/504 or network failure), wait and retry once
+      const isRetryable = firstError.message.includes("starting up") ||
+                          firstError.message.includes("waking up") ||
+                          firstError.message.includes("unexpected response");
+      if (isRetryable) {
+        removeTypingIndicator();
+        addMessage(
+          "The server is warming up. Retrying in 10 seconds…",
+          "rag-assistant rag-error",
+        );
+        await new Promise(r => setTimeout(r, 10000));
+        addTypingIndicator();
+        result = await requestRagApi("/api/chat", chatOptions);
+      } else {
+        throw firstError;
+      }
+    }
     removeTypingIndicator();
     addMessage(result.answer, "rag-assistant", result.sources ?? [], result.urgent ?? false);
   } catch (error) {
@@ -120,7 +150,7 @@ chatForm.addEventListener("submit", async (event) => {
     addMessage(error.message, "rag-assistant rag-error");
   } finally {
     chatSend.disabled = false;
-    chatSend.textContent = "Ask";
+    chatSend.textContent = "Send Message";
     chatInput.focus();
   }
 });
