@@ -22,7 +22,7 @@ from pydantic import BaseModel, Field
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "qwen/qwen3.8-27b"
 
@@ -278,82 +278,103 @@ def chat(request: ChatRequest) -> dict[str, Any]:
 @app.post("/api/doctors")
 def nearby_doctors(request: NearbyRequest) -> dict[str, Any]:
     latitude, longitude = request.latitude, request.longitude
-    radius = request.radius_m
+    radius_km = request.radius_m / 1000
 
-    # Query OpenStreetMap Overpass for psychologists, counsellors, psychiatrists, clinics
-    query = (
-        f'[out:json][timeout:25];'
-        f'(nwr(around:{radius},{latitude},{longitude})'
-        f'["healthcare"~"psychologist|psychotherapist|psychiatrist|counsellor|mental_health",i];'
-        f'nwr(around:{radius},{latitude},{longitude})'
-        f'["amenity"~"doctors|clinic|hospital",i];'
-        f'nwr(around:{radius},{latitude},{longitude})'
-        f'["healthcare"="yes"];'
-        f');out center tags;'
-    )
-    try:
-        response = requests.post(
-            OVERPASS_URL,
-            data={"data": query},
-            headers={"User-Agent": "StudentMentalHealthPredictor/2.0"},
-            timeout=30,
-        )
-        response.raise_for_status()
-        elements = response.json().get("elements", [])
-    except (requests.RequestException, ValueError) as error:
-        raise HTTPException(
-            status_code=503,
-            detail=(
-                "Nearby listings are temporarily unavailable. "
-                "Please try again later or use the OpenStreetMap search link."
-            ),
-        ) from error
+    # Use Nominatim to search for mental health providers near the given coordinates.
+    # We run several targeted searches and merge the results.
+    search_terms = [
+        "psychologist",
+        "psychiatrist",
+        "mental health clinic",
+        "counsellor",
+        "therapist",
+    ]
 
+    headers = {
+        "User-Agent": "StudentMentalHealthPredictor/2.0 (educational; contact: student@mindscores.dev)",
+        "Accept-Language": "en",
+    }
+
+    seen: set[str] = set()
     providers: list[dict[str, Any]] = []
-    seen: set[tuple[str, float, float]] = set()
 
-    for element in elements:
-        tags = element.get("tags", {})
-        name = tags.get("name") or tags.get("operator")
-        point = element.get("center", element)
-        provider_lat, provider_lon = point.get("lat"), point.get("lon")
-        if not name or provider_lat is None or provider_lon is None:
+    for term in search_terms:
+        try:
+            params = {
+                "q": term,
+                "format": "jsonv2",
+                "limit": 20,
+                "lat": latitude,
+                "lon": longitude,
+                "addressdetails": 1,
+                "extratags": 1,
+                "countrycodes": "",   # allow all countries
+            }
+            resp = requests.get(
+                NOMINATIM_URL,
+                params=params,
+                headers=headers,
+                timeout=15,
+            )
+            resp.raise_for_status()
+            results = resp.json()
+        except (requests.RequestException, ValueError):
             continue
-        key = (name, round(provider_lat, 5), round(provider_lon, 5))
-        if key in seen:
-            continue
-        seen.add(key)
-        address = ", ".join(
-            value for value in (
-                tags.get("addr:street"),
-                tags.get("addr:housenumber"),
-                tags.get("addr:city") or tags.get("addr:town"),
-                tags.get("addr:postcode"),
-            ) if value
-        )
-        phone = tags.get("phone") or tags.get("contact:phone") or ""
-        website = tags.get("website") or tags.get("contact:website") or ""
-        provider_type = (
-            tags.get("healthcare") or tags.get("amenity") or "health service"
-        ).replace("_", " ").title()
 
-        providers.append({
-            "name": name,
-            "type": provider_type,
-            "address": address,
-            "phone": phone,
-            "website": website,
-            "distance_km": round(
-                _distance_km(latitude, longitude, provider_lat, provider_lon), 1
-            ),
-            "map_url": (
-                f"https://www.openstreetmap.org/?mlat={provider_lat}"
-                f"&mlon={provider_lon}#map=17/{provider_lat}/{provider_lon}"
-            ),
-        })
+        for item in results:
+            place_id = str(item.get("place_id", ""))
+            if place_id in seen:
+                continue
+            seen.add(place_id)
+
+            provider_lat = float(item.get("lat", 0))
+            provider_lon = float(item.get("lon", 0))
+            dist = _distance_km(latitude, longitude, provider_lat, provider_lon)
+
+            # Only keep results within the requested radius
+            if dist > radius_km:
+                continue
+
+            name = item.get("name") or item.get("display_name", "").split(",")[0]
+            if not name:
+                continue
+
+            address_parts = item.get("address", {})
+            address = ", ".join(filter(None, [
+                address_parts.get("road") or address_parts.get("street"),
+                address_parts.get("suburb") or address_parts.get("neighbourhood"),
+                address_parts.get("city") or address_parts.get("town") or address_parts.get("village"),
+                address_parts.get("postcode"),
+            ]))
+
+            extra = item.get("extratags") or {}
+            phone = extra.get("phone") or extra.get("contact:phone") or ""
+            website = extra.get("website") or extra.get("contact:website") or ""
+            provider_type = (
+                extra.get("healthcare")
+                or extra.get("amenity")
+                or item.get("type", "health service")
+            ).replace("_", " ").title()
+
+            providers.append({
+                "name": name,
+                "type": provider_type,
+                "address": address,
+                "phone": phone,
+                "website": website,
+                "distance_km": round(dist, 1),
+                "map_url": (
+                    f"https://www.openstreetmap.org/?mlat={provider_lat}"
+                    f"&mlon={provider_lon}#map=17/{provider_lat}/{provider_lon}"
+                ),
+            })
+
+    if not providers:
+        # Return empty list — frontend already handles this gracefully
+        return {"providers": [], "radius_m": request.radius_m}
 
     providers.sort(key=lambda p: p["distance_km"])
-    return {"providers": providers[:25], "radius_m": radius}
+    return {"providers": providers[:25], "radius_m": request.radius_m}
 
 
 @app.get("/{asset_name}")
