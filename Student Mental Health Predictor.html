@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Student Mental Health Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="Student Mental Health Predictor.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════════════════ -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="nav-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 21C12 21 4 14.5 4 9a8 8 0 0 1 16 0c0 5.5-8 12-8 12z" fill="currentColor" opacity=".18"/>
+        <path d="M12 21C12 21 4 14.5 4 9a8 8 0 0 1 16 0c0 5.5-8 12-8 12z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+        <circle cx="12" cy="9" r="3" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+      MindScore
+    </span>
+    <div class="nav-links">
+      <a href="#assessment">Assessment</a>
+      <a href="#insights">Insights</a>
+      <a href="#chat">AI Support</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════════ -->
+<header class="hero" id="top">
+  <div class="hero-content">
+    <div class="hero-badge animate-fade-up">Evidence-Based Mental Health Research</div>
+    <h1 class="animate-fade-up" style="animation-delay:.08s">Understanding Student<br><em>Mental Well-being</em></h1>
+    <p class="hero-lead animate-fade-up" style="animation-delay:.16s">
+      A predictive assessment tool trained on 5,000 student records. Enter your daily habits below to receive a personalised mental health score and evidence-based insights.
+    </p>
+    <div class="hero-stats animate-fade-up" style="animation-delay:.24s">
+      <div class="stat-chip"><strong>5,000</strong> Students Surveyed</div>
+      <div class="stat-chip"><strong>R² 0.95</strong> Model Accuracy</div>
+      <div class="stat-chip"><strong>12</strong> Input Variables</div>
+    </div>
+  </div>
+  <div class="hero-visual animate-fade-in" style="animation-delay:.1s" aria-hidden="true">
+    <!-- Brain / well-being SVG illustration -->
+    <svg viewBox="0 0 420 380" class="hero-svg" xmlns="http://www.w3.org/2000/svg">
+      <!-- Glow circle -->
+      <circle cx="210" cy="190" r="160" fill="url(#heroGrad)" opacity=".18"/>
+      <!-- Outer ring -->
+      <circle cx="210" cy="190" r="148" fill="none" stroke="url(#ringGrad)" stroke-width="1.2" stroke-dasharray="6 4"/>
+      <!-- Brain shape -->
+      <path d="M210 100 C240 80 290 90 300 130 C315 125 338 140 330 165 C345 175 348 200 330 210
+               C338 228 325 248 305 245 C298 268 275 278 255 265 C245 282 225 285 210 275
+               C195 285 175 282 165 265 C145 278 122 268 115 245 C95 248 82 228 90 210
+               C72 200 75 175 90 165 C82 140 105 125 120 130 C130 90 180 80 210 100Z"
+            fill="url(#brainGrad)" stroke="var(--acc)" stroke-width="1.5" opacity=".85"/>
+      <!-- Left hemisphere line -->
+      <path d="M210 108 C210 108 205 180 210 275" fill="none" stroke="var(--acc)" stroke-width="1" opacity=".4" stroke-dasharray="4 3"/>
+      <!-- Neural paths -->
+      <path d="M155 160 Q175 145 195 165 Q215 185 235 165 Q255 148 270 162" fill="none" stroke="var(--acc)" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+      <path d="M145 195 Q165 178 185 198 Q205 218 225 198 Q245 178 270 195" fill="none" stroke="var(--acc)" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+      <path d="M155 228 Q175 212 195 230 Q215 248 235 230 Q255 212 270 228" fill="none" stroke="var(--acc)" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+      <!-- Nodes -->
+      <circle cx="155" cy="160" r="4" fill="var(--acc)" opacity=".7"/>
+      <circle cx="195" cy="165" r="4" fill="var(--acc)" opacity=".7"/>
+      <circle cx="235" cy="165" r="4" fill="var(--acc)" opacity=".7"/>
+      <circle cx="270" cy="162" r="4" fill="var(--acc)" opacity=".7"/>
+      <circle cx="145" cy="195" r="4" fill="var(--good)" opacity=".8"/>
+      <circle cx="185" cy="198" r="4" fill="var(--good)" opacity=".8"/>
+      <circle cx="225" cy="198" r="4" fill="var(--good)" opacity=".8"/>
+      <circle cx="270" cy="195" r="4" fill="var(--good)" opacity=".8"/>
+      <circle cx="155" cy="228" r="4" fill="var(--acc)" opacity=".7"/>
+      <circle cx="195" cy="230" r="4" fill="var(--acc)" opacity=".7"/>
+      <circle cx="235" cy="230" r="4" fill="var(--acc)" opacity=".7"/>
+      <circle cx="270" cy="228" r="4" fill="var(--acc)" opacity=".7"/>
+      <!-- Floating score chips -->
+      <rect x="295" y="130" width="80" height="32" rx="16" fill="var(--acc)" opacity=".9"/>
+      <text x="335" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Score 7.8</text>
+      <rect x="42" y="200" width="80" height="32" rx="16" fill="var(--good)" opacity=".9"/>
+      <text x="82" y="221" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">↑ Typical</text>
+      <!-- Pulse rings on one node -->
+      <circle cx="210" cy="190" r="12" fill="var(--acc)" opacity=".15" class="pulse-ring"/>
+      <circle cx="210" cy="190" r="7" fill="var(--acc)" opacity=".9"/>
+      <defs>
+        <radialGradient id="heroGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="var(--acc)" stop-opacity=".5"/>
+          <stop offset="100%" stop-color="var(--acc)" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="var(--acc2)"/>
+          <stop offset="100%" stop-color="var(--acc)" stop-opacity=".25"/>
+        </linearGradient>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="var(--acc)"/>
+          <stop offset="100%" stop-color="var(--good)"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ASSESSMENT
+════════════════════════════════════════════════════════════ -->
+<main>
+<div class="wrap" id="assessment">
+
+  <div class="section-label">Predictive Assessment</div>
+  <div class="grid assessment-grid">
+
+    <!-- ── Input form ── -->
+    <form class="card form-card" id="form" onsubmit="return false">
+      <div class="card-header">
+        <h2>Student Profile</h2>
+        <p class="card-sub">Enter your typical daily habits. All values are used solely for the prediction and are never transmitted.</p>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label for="use">
+            <span class="field-label">Daily Social Media Usage</span>
+            <output id="o_use" class="field-value"></output>
+          </label>
+          <input id="use" type="range" min="1" max="9" step="0.1" value="5" class="slider">
+          <span class="field-range">1 hr — 9 hrs</span>
+        </div>
+
+        <div class="field">
+          <label for="sleep">
+            <span class="field-label">Sleep Duration</span>
+            <output id="o_sleep" class="field-value"></output>
+          </label>
+          <input id="sleep" type="range" min="3.5" max="10" step="0.1" value="6.6" class="slider">
+          <span class="field-range">3.5 hrs — 10 hrs</span>
+        </div>
+
+        <div class="field">
+          <label for="unl">
+            <span class="field-label">Phone Unlocks</span>
+            <output id="o_unl" class="field-value"></output>
+          </label>
+          <input id="unl" type="range" min="50" max="280" step="1" value="170" class="slider">
+          <span class="field-range">50 — 280 times</span>
+        </div>
+
+        <div class="field">
+          <label for="study">
+            <span class="field-label">Study Hours</span>
+            <output id="o_study" class="field-value"></output>
+          </label>
+          <input id="study" type="range" min="0.3" max="8.5" step="0.1" value="3" class="slider">
+          <span class="field-range">0.3 hrs — 8.5 hrs</span>
+        </div>
+
+        <div class="field">
+          <label for="phys">
+            <span class="field-label">Physical Activity</span>
+            <output id="o_phys" class="field-value"></output>
+          </label>
+          <input id="phys" type="range" min="0" max="4.2" step="0.1" value="1.7" class="slider">
+          <span class="field-range">0 hrs — 4.2 hrs</span>
+        </div>
+
+        <div class="field">
+          <label for="age">
+            <span class="field-label">Age</span>
+            <output id="o_age" class="field-value"></output>
+          </label>
+          <input id="age" type="range" min="18" max="24" step="1" value="21" class="slider">
+          <span class="field-range">18 yrs — 24 yrs</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Perceived Stress Level</span>
+        <div class="seg" id="stress" role="group" aria-label="Stress level"></div>
+      </div>
+
+      <div class="field-two">
+        <div class="field">
+          <label for="gender"><span class="field-label">Gender</span></label>
+          <select id="gender"></select>
+        </div>
+        <div class="field">
+          <label for="level"><span class="field-label">Academic Level</span></label>
+          <select id="level"></select>
+        </div>
+        <div class="field">
+          <label for="plat"><span class="field-label">Primary Platform</span></label>
+          <select id="plat"></select>
+        </div>
+        <div class="field">
+          <label for="purpose"><span class="field-label">Primary Use</span></label>
+          <select id="purpose"></select>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:0">
+        <label for="country"><span class="field-label">Country of Study</span></label>
+        <select id="country"></select>
+      </div>
+    </form>
+
+    <!-- ── Results ── -->
+    <div class="results-col">
+      <div class="card result-card" aria-live="polite">
+        <div class="card-header">
+          <h2>Predicted Score</h2>
+          <p class="card-sub">Based on your current profile inputs</p>
+        </div>
+        <div class="score-display">
+          <div class="score-ring">
+            <svg viewBox="0 0 120 120" class="score-ring-svg" aria-hidden="true">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="var(--line)" stroke-width="8"/>
+              <circle id="score-arc" cx="60" cy="60" r="52" fill="none" stroke="var(--acc)" stroke-width="8"
+                      stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7"
+                      transform="rotate(-90 60 60)"/>
+            </svg>
+            <div class="score-inner">
+              <div id="num" class="score-num">–</div>
+              <div class="score-label">/ 10</div>
+            </div>
+          </div>
+          <div class="score-meta">
+            <div id="band" class="score-band"></div>
+            <p id="rank" class="score-rank"></p>
+          </div>
+        </div>
+        <svg id="hist" viewBox="0 0 600 170" role="img" aria-label="Distribution of mental health scores across 5,000 students with the prediction marked" class="hist-svg"></svg>
+        <p class="chart-note">Each bar represents a cohort of students at a similar score. The indicator line marks your predicted position.</p>
+      </div>
+
+      <div class="card delta-card" style="margin-top:20px">
+        <div class="card-header">
+          <h2>What Would Change It</h2>
+          <p class="card-sub">Estimated score change if a single variable were adjusted, holding all others constant. These reflect statistical patterns, not causal evidence.</p>
+        </div>
+        <div id="deltas"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       INSIGHTS SECTION
+  ════════════════════════════════════════════════════════════ -->
+  <div class="section-divider" id="insights"></div>
+  <div class="section-label animate-on-scroll">Dataset Insights</div>
+  <h2 class="section-title animate-on-scroll">What 5,000 Records Reveal</h2>
+  <p class="section-sub animate-on-scroll">
+    Average mental health scores segmented by key behavioural variables. Social media usage correlates negatively with well-being (r = <span id="rv"></span>), while sleep duration shows a strong positive association.
+  </p>
+  <div class="ins animate-on-scroll">
+    <div class="card insight-card"><h3>Daily Social Media Hours</h3><div class="chart-label">Average mental health score</div><svg class="ch" id="c_use"></svg></div>
+    <div class="card insight-card"><h3>Sleep Duration per Night</h3><div class="chart-label">Average mental health score</div><svg class="ch" id="c_sleep"></svg></div>
+    <div class="card insight-card"><h3>Perceived Stress Level</h3><div class="chart-label">Average mental health score</div><div id="c_stress"></div></div>
+    <div class="card insight-card"><h3>Primary Social Platform</h3><div class="chart-label">Average score — platforms with ≥ 100 respondents</div><div id="c_plat"></div></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODEL SECTION
+  ════════════════════════════════════════════════════════════ -->
+  <div class="section-divider"></div>
+  <div class="section-label animate-on-scroll">Methodology</div>
+  <h2 class="section-title animate-on-scroll">About the Predictive Model</h2>
+  <p class="section-sub animate-on-scroll">The prediction engine runs entirely within this page using a compressed random forest. No data is transmitted to any server during prediction.</p>
+  <div class="model-grid animate-on-scroll">
+    <div class="card model-detail-card">
+      <dl class="model-dl">
+        <dt>Algorithm</dt><dd>Random Forest Regressor — 100 decision trees</dd>
+        <dt>Target Variable</dt><dd>Mental health score (continuous, 1–10)</dd>
+        <dt>Feature Engineering</dt><dd>Study hours log-transformed; continuous variables standardised; stress encoded ordinally (Low → Very High); categorical fields one-hot encoded; countries outside the top nine grouped as "Other"</dd>
+        <dt>In-sample Fit</dt><dd>R² = 0.95 · Mean Absolute Error = 0.19 points</dd>
+        <dt>In-browser Version</dt><dd>40 of 100 trees; within 0.04 points of the full model on average</dd>
+      </dl>
+    </div>
+    <div class="card model-imp-card">
+      <h3>Feature Importance</h3>
+      <p class="card-sub" style="margin-bottom:14px">Relative contribution of each input to model predictions</p>
+      <div id="imp"></div>
+    </div>
+  </div>
+  <p class="disclaimer animate-on-scroll">
+    <strong>Important Disclaimer:</strong> This tool provides a statistical estimate derived from survey data and is not a clinical diagnostic instrument or psychological screening tool. The accuracy metric is measured on the training dataset and may not reflect real-world performance. If you or someone you know is experiencing persistent mental health difficulties, please consult a qualified healthcare professional or licensed counsellor.
+  </p>
+
+</div><!-- /wrap -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     AI CHAT SECTION
+════════════════════════════════════════════════════════════ -->
+<div class="chat-outer" id="chat">
+  <div class="wrap">
+    <div class="section-label animate-on-scroll" style="color:rgba(255,255,255,.7)">AI-Powered Support</div>
+    <h2 class="section-title animate-on-scroll" style="color:#fff">Mental Health Support Assistant</h2>
+    <p class="section-sub animate-on-scroll" style="color:rgba(255,255,255,.75);max-width:62ch">
+      Powered by a large language model with live web search capability. Raise any concern regarding sleep, anxiety, academic pressure, or social media balance. The assistant retrieves current, evidence-based information and cites its sources.
+    </p>
+
+    <div class="rag-server-note animate-on-scroll">
+      <strong>Setup required:</strong> Start the server with
+      <code>python -m uvicorn rag_engine:app --host 127.0.0.1 --port 8000</code>
+      then open <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>.
+      Add your <strong>GROQ_API_KEY</strong> to a <code>.env</code> file (see <code>.env.example</code>).
+    </div>
+
+    <div class="chat-layout animate-on-scroll">
+      <!-- Chat panel -->
+      <div class="card rag-card chat-card">
+        <div class="rag-privacy">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0;margin-top:1px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span><strong>Privacy:</strong> Your messages are processed via the Groq API. Web searches use DuckDuckGo. Location data, if shared, is transmitted only to OpenStreetMap. No data is stored on disk.</span>
+        </div>
+        <div id="rag-messages" class="rag-messages" role="log" aria-live="polite" aria-relevant="additions text">
+          <div class="rag-message rag-assistant">
+            <p class="rag-bubble-text">Good day. I am your mental health support assistant. I can provide guidance on stress management, sleep hygiene, anxiety, academic pressure, and more — drawing on live web-sourced, evidence-based information. How may I assist you today?</p>
+          </div>
+        </div>
+        <form id="rag-form" class="rag-form" aria-labelledby="rag-title">
+          <label for="rag-input" class="rag-input-label">Your Question</label>
+          <textarea id="rag-input" name="message" rows="2" maxlength="2000" placeholder="e.g. How can I manage exam anxiety effectively?" required></textarea>
+          <div class="rag-form-footer">
+            <span class="rag-ai-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              AI · Live Web Search
+            </span>
+            <button id="rag-send" type="submit">Send Message</button>
+          </div>
+        </form>
+        <p class="rag-note">
+          <strong>Emergency Notice:</strong> This assistant is not a crisis service. If you are in immediate danger, please contact your local emergency services or go to the nearest emergency department. In the United States or Canada, call or text <strong>988</strong>.
+        </p>
+      </div>
+
+      <!-- Nearby panel -->
+      <div class="card nearby-card">
+        <div class="card-header">
+          <div class="nearby-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <h3>Nearby Psychologists &amp; Clinics</h3>
+            <p class="card-sub">Locate licensed mental health professionals and clinics within 15 km of your current location via OpenStreetMap.</p>
+          </div>
+        </div>
+        <button id="rag-nearby-button" class="nearby-btn" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Share Location &amp; Search
+        </button>
+        <p id="rag-location-status" class="rag-status" role="status"></p>
+        <ul id="rag-provider-list" class="rag-provider-list"></ul>
+        <a id="rag-map-search" class="rag-map-link" href="#" target="_blank" rel="noopener noreferrer" hidden>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View this area on OpenStreetMap
+        </a>
+        <p class="rag-attribution">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>. Listings may be incomplete; verify services and availability directly.</p>
+      </div>
+    </div>
+  </div>
+</div><!-- /chat-outer -->
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 21C12 21 4 14.5 4 9a8 8 0 0 1 16 0c0 5.5-8 12-8 12z" fill="currentColor" opacity=".2"/>
+        <path d="M12 21C12 21 4 14.5 4 9a8 8 0 0 1 16 0c0 5.5-8 12-8 12z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+        <circle cx="12" cy="9" r="3" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+      MindScore
+    </div>
+    <p class="footer-copy">Built from <em>Student_Social_Media_And_Mental_Health_Impact.csv</em> · Random forest model trained on 5,000 student records · For research and educational purposes only.</p>
+    <p class="footer-copy" style="margin-top:4px">This tool does not constitute medical advice. Consult a qualified professional for clinical concerns.</p>
+  </div>
+</footer>
+
+<script src="Student Mental Health Predictor.js"></script>
+<script src="rag_chat.js"></script>
+</body>
+</html>
